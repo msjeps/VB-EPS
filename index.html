@@ -520,6 +520,7 @@ input:checked + .toggle-slider:before { transform:translateX(24px); }
         <div class="card-title" style="margin:14px 0 10px;">👥 Barème collectif lycée</div>
         <div id="adm-bcl"></div>
         <button class="btn btn-success btn-full" onclick="saveAdmin()" style="margin-top:16px;">💾 Enregistrer</button>
+        <button class="btn btn-warn btn-full" onclick="resetBareme()" style="margin-top:8px;">↩ Réinitialiser les barèmes par défaut</button>
       </div>
     </div>
   </div>
@@ -609,7 +610,7 @@ const DEF_BAREME = {
     {pts:0,label:'Raté'},
   ],
   renvoi_lycee:[
-    {pts:4,label:'Smasché réussi'},
+    {pts:4,label:'Smashé réussi'},
     {pts:3,label:'Tendu et placé réussi'},
     {pts:2,label:"Sur l'adversaire"},
     {pts:1,label:'Dos au filet'},
@@ -622,7 +623,7 @@ const DEF_BAREME = {
     {pts:0,label:'Ballon non renvoyé'},
   ],
   collectif_lycee:[
-    {pts:5,label:'Renvoi smasché'},
+    {pts:4,label:'Renvoi smashé'},
     {pts:3,label:'Placé tendu zone arrière'},
     {pts:2,label:'Placé tendu zone avant'},
     {pts:1,label:'Haut ou à l\'aveugle'},
@@ -2760,6 +2761,14 @@ function buildAdminBaremes() {
           + '</div>';
       }).join('');
   });
+}
+
+function resetBareme() {
+  if(!confirm('Réinitialiser tous les barèmes aux valeurs par défaut ?')) return;
+  bareme = JSON.parse(JSON.stringify(DEF_BAREME));
+  localStorage.removeItem('vbeps_bareme');
+  buildAdminBaremes();
+  toast('✅ Barèmes réinitialisés aux valeurs par défaut');
 }
 
 function saveAdmin() {
