@@ -259,6 +259,10 @@ input:checked + .toggle-slider:before { transform:translateX(24px); }
 @media (orientation: portrait) {
   .score-btn { min-height: 64px; }
 }
+
+/* Espace en bas de l'écran obs pour ne pas masquer le contenu sous la barre fixe */
+#screen-obs { padding-bottom: 100px; }
+@media (min-width:768px) { #screen-obs { padding-bottom: 120px; } }
 </style>
 </head>
 <body>
@@ -626,6 +630,11 @@ input:checked + .toggle-slider:before { transform:translateX(24px); }
   </div>
 </div>
 
+<!-- BARRE FIXE "Enregistrer les résultats" — visible uniquement sur screen-obs -->
+<div id="obs-save-bar" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:500;padding:10px 16px 18px;background:linear-gradient(transparent,var(--bg) 28%);pointer-events:none;">
+  <button class="btn btn-success btn-full btn-xl" onclick="showScreen('screen-results')" style="pointer-events:all;box-shadow:0 6px 24px rgba(5,150,105,0.5);">💾 Enregistrer les résultats</button>
+</div>
+
 <div id="toast"></div>
 <script>
 // ==============================
@@ -881,6 +890,9 @@ function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   const el = document.getElementById(id);
   if(el) { el.classList.add('active'); el.scrollTop = 0; }
+  // Barre fixe "Enregistrer les résultats" uniquement sur l'écran observation
+  var savebar = document.getElementById('obs-save-bar');
+  if(savebar) savebar.style.display = (id === 'screen-obs') ? 'block' : 'none';
   if(id === 'screen-results') buildResults();
   if(id === 'screen-export')  buildExportScreen();
   if(id === 'screen-mode')    initModeScreen();
@@ -1366,10 +1378,6 @@ function buildObsScreen() {
   h += '<div class="action-log" id="obs-log"></div>';
   h += '</div>';
   }
-  // Bouton flottant Enregistrer toujours visible en bas
-  h += '<div style="position:sticky;bottom:0;padding:12px 0 4px;background:linear-gradient(transparent,var(--bg) 30%);">'
-    + '<button class="btn btn-success btn-full btn-xl" onclick="showScreen(\'screen-results\')" style="box-shadow:0 4px 20px rgba(5,150,105,0.4);">'
-    + '💾 Enregistrer les résultats</button></div>';
   h += '<div style="height:8px;"></div>';
 
   el.innerHTML = h;
