@@ -27,7 +27,8 @@ body.theme-blue   { --primary:#2563eb; --primary-dark:#1d4ed8; --primary-light:#
 html, body { height:100%; overflow:hidden; }
 body { font-family:'Segoe UI',system-ui,sans-serif; background:var(--bg); color:var(--text); font-size:16px; }
 
-#app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+/* 100dvh tient compte de la barre du navigateur sur mobile (Safari/Chrome) */
+#app { height:100vh; height:100dvh; display:flex; flex-direction:column; overflow:hidden; }
 .topbar { background:var(--primary); color:#fff; padding:10px 16px; display:flex; align-items:center; justify-content:space-between; min-height:56px; flex-shrink:0; box-shadow:0 2px 8px rgba(0,0,0,0.2); z-index:10; }
 .topbar-title { font-size:1.1rem; font-weight:700; display:flex; align-items:center; gap:8px; }
 .topbar-logo { width:36px; height:36px; border-radius:8px; object-fit:contain; background:#fff; }
@@ -260,9 +261,48 @@ input:checked + .toggle-slider:before { transform:translateX(24px); }
   .score-btn { min-height: 64px; }
 }
 
-/* Espace en bas de l'écran obs pour ne pas masquer le contenu sous la barre fixe */
-#screen-obs { padding-bottom: 100px; }
-@media (min-width:768px) { #screen-obs { padding-bottom: 120px; } }
+/* Espace sous les barres fixes pour ne pas masquer le contenu */
+#screen-obs     { padding-bottom: 100px; }
+#screen-results { padding-bottom: 170px; }
+#screen-export  { padding-bottom: 130px; }
+@media (min-width:768px) {
+  #screen-obs     { padding-bottom: 130px; }
+  #screen-results { padding-bottom: 200px; }
+  #screen-export  { padding-bottom: 160px; }
+}
+
+/* ── TRÈS PETIT ÉCRAN — téléphone 5 pouces (≤ 479px CSS) ── */
+@media (max-width:479px) {
+  body { font-size: 15px; }
+  .screen { padding: 10px 12px; }
+  .topbar { min-height: 48px; padding: 8px 12px; }
+  .topbar-title { font-size: 1rem; }
+  .topbar-logo { width: 32px; height: 32px; }
+  .icon-btn { width: 40px; height: 40px; font-size: 1.1rem; }
+  .card { padding: 12px 14px; margin-bottom: 10px; border-radius: 14px; }
+  .card-title { font-size: 0.9rem; margin-bottom: 8px; }
+  .btn { min-height: 52px; font-size: 0.95rem; padding: 12px 16px; }
+  .btn-xl { min-height: 62px; font-size: 1rem; }
+  .score-btn { min-height: 58px; padding: 10px 14px; gap: 10px; border-radius: 12px; }
+  .score-btn .pts { font-size: 1.4rem; min-width: 44px; }
+  .score-btn .lbl { font-size: 0.78rem; }
+  .mode-icon { font-size: 2rem; }
+  .mode-name { font-size: 0.9rem; }
+  .chrono-display { font-size: 2.8rem; }
+  /* Multi-rôle : 1 colonne empilée sur très petit écran */
+  .combo-grid { grid-template-columns: 1fr !important; }
+}
+
+/* ── TÉLÉPHONE STANDARD — 5.5 à 6.5 pouces (480–767px) ── */
+@media (min-width:480px) and (max-width:767px) {
+  body { font-size: 16px; }
+  .screen { padding: 14px 16px; }
+  /* Multi-rôle 3 colonnes : réduire un peu */
+  .combo-grid .card { padding: 8px; }
+  .combo-grid .score-btn { min-height: 56px; padding: 8px 10px; gap: 8px; }
+  .combo-grid .score-btn .pts { font-size: 1.3rem; min-width: 40px; }
+  .combo-grid .score-btn .lbl { font-size: 0.75rem; }
+}
 </style>
 </head>
 <body>
@@ -487,9 +527,6 @@ input:checked + .toggle-slider:before { transform:translateX(24px); }
     <div class="action-log" id="res-log"></div>
   </div>
 
-  <button class="btn btn-success btn-full btn-xl" onclick="showScreen('screen-export')" style="margin-bottom:10px;">💾 Enregistrer la séance</button>
-  <div id="res-pending-info" style="text-align:center;font-size:0.85rem;color:var(--text2);margin-bottom:6px;"></div>
-  <button id="btn-new-obs" class="btn btn-primary btn-full" onclick="newObservation()" style="margin-bottom:10px;">↩ Nouvelle observation (même séance)</button>
 </div>
 
 <!-- SCREEN EXPORT -->
@@ -513,8 +550,6 @@ input:checked + .toggle-slider:before { transform:translateX(24px); }
     <div class="card-title">🕐 Séances enregistrées</div>
     <div id="exp-history"></div>
   </div>
-  <button class="btn btn-ghost btn-full" onclick="showScreen('screen-results')" style="margin-top:10px;">← Retour résultats</button>
-  <button class="btn btn-warn btn-full" onclick="resetTotal()" style="margin-top:10px;">🏠 Nouvelle séance (tout effacer)</button>
 </div>
 
 </div><!-- #app -->
@@ -570,7 +605,7 @@ input:checked + .toggle-slider:before { transform:translateX(24px); }
       <div id="admin-login">
         <div class="form-group">
           <label>Mot de passe</label>
-          <input type="password" id="admin-pwd" placeholder="Mot de passe professeur" onkeydown="if(event.key==='Enter')checkAdmin()">
+          <input type="password" id="admin-pwd" name="admin-pwd" autocomplete="current-password" placeholder="Mot de passe professeur" onkeydown="if(event.key==='Enter')checkAdmin()">
         </div>
         <button class="btn btn-primary btn-full" onclick="checkAdmin()">🔓 Accéder</button>
       </div>
@@ -630,9 +665,22 @@ input:checked + .toggle-slider:before { transform:translateX(24px); }
   </div>
 </div>
 
-<!-- BARRE FIXE "Enregistrer les résultats" — visible uniquement sur screen-obs -->
+<!-- BARRE FIXE obs -->
 <div id="obs-save-bar" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:500;padding:10px 16px 18px;background:linear-gradient(transparent,var(--bg) 28%);pointer-events:none;">
   <button class="btn btn-success btn-full btn-xl" onclick="showScreen('screen-results')" style="pointer-events:all;box-shadow:0 6px 24px rgba(5,150,105,0.5);">💾 Enregistrer les résultats</button>
+</div>
+
+<!-- BARRE FIXE résultats -->
+<div id="results-save-bar" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:500;padding:8px 16px 16px;background:linear-gradient(transparent,var(--bg) 22%);pointer-events:none;">
+  <button class="btn btn-success btn-full btn-xl" onclick="showScreen('screen-export')" style="pointer-events:all;box-shadow:0 6px 24px rgba(5,150,105,0.5);margin-bottom:8px;">💾 Enregistrer la séance</button>
+  <div id="res-pending-info" style="text-align:center;font-size:0.85rem;color:var(--text2);margin-bottom:6px;"></div>
+  <button id="btn-new-obs" class="btn btn-primary btn-full" onclick="newObservation()" style="pointer-events:all;">↩ Nouvelle observation (même séance)</button>
+</div>
+
+<!-- BARRE FIXE export -->
+<div id="export-save-bar" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:500;padding:8px 16px 16px;background:linear-gradient(transparent,var(--bg) 22%);pointer-events:none;">
+  <button class="btn btn-ghost btn-full" onclick="showScreen('screen-results')" style="pointer-events:all;margin-bottom:8px;">← Retour résultats</button>
+  <button class="btn btn-warn btn-full" onclick="resetTotal()" style="pointer-events:all;">🏠 Nouvelle séance (tout effacer)</button>
 </div>
 
 <div id="toast"></div>
@@ -886,13 +934,21 @@ function initModeScreen() {
 
 function showScreen(id) {
   if(id !== 'screen-obs') stopVoice();
-  // orientation free — no unlock needed
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   const el = document.getElementById(id);
   if(el) { el.classList.add('active'); el.scrollTop = 0; }
-  // Barre fixe "Enregistrer les résultats" uniquement sur l'écran observation
-  var savebar = document.getElementById('obs-save-bar');
-  if(savebar) savebar.style.display = (id === 'screen-obs') ? 'block' : 'none';
+  // Barres fixes : afficher seulement celle de l'écran actif
+  var barMap = {
+    'screen-obs':     'obs-save-bar',
+    'screen-results': 'results-save-bar',
+    'screen-export':  'export-save-bar'
+  };
+  ['obs-save-bar','results-save-bar','export-save-bar'].forEach(function(bid) {
+    var b = document.getElementById(bid);
+    if(b) b.style.display = 'none';
+  });
+  var activeBar = barMap[id];
+  if(activeBar) { var b = document.getElementById(activeBar); if(b) b.style.display = 'block'; }
   if(id === 'screen-results') buildResults();
   if(id === 'screen-export')  buildExportScreen();
   if(id === 'screen-mode')    initModeScreen();
@@ -1467,7 +1523,7 @@ function buildComboBtns() {
   const ncols = roles.length;
   const nbTarget = obs.mode==='actions' ? obs.nbActions : '∞';
 
-  let h = '<div style="display:grid;grid-template-columns:repeat('+ncols+',1fr);gap:10px;align-items:start;">';
+  let h = '<div class="combo-grid" style="display:grid;grid-template-columns:repeat('+ncols+',1fr);gap:10px;align-items:start;">';
 
   roles.forEach(function(role) {
     const color = ROLE_COLORS[role];
@@ -2038,7 +2094,7 @@ function buildCSVColsUI(containerId) {
   let html = '<div style="font-size:0.85rem;color:var(--text2);margin-bottom:8px;">Colonnes à exporter :</div>'
     + csvCols.map((col,i) =>
       '<label style="display:flex;align-items:center;gap:8px;margin-bottom:8px;cursor:pointer;">'
-      + '<input type="checkbox" name="csv-col-'+i+'" ' + (col.checked?'checked':'') + ' onchange="csvCols['+i+'].checked=this.checked"> '
+      + '<input type="checkbox" id="csv-col-'+i+'" name="csv-col-'+i+'" ' + (col.checked?'checked':'') + ' onchange="csvCols['+i+'].checked=this.checked"> '
       + col.label + '</label>'
     ).join('');
 
@@ -2050,9 +2106,9 @@ function buildCSVColsUI(containerId) {
     autoRoles.forEach(function(r) {
       var lbl = r==='serveur'?'Serveur':r==='reception'?'Réception':'Renvoi';
       html += '<label style="display:flex;align-items:center;gap:8px;margin-bottom:6px;opacity:0.7;">'
-        + '<input type="checkbox" checked disabled> Total pts ' + lbl + '</label>';
+        + '<input type="checkbox" id="auto-col-'+r+'-total" name="auto-col-'+r+'-total" checked disabled> Total pts ' + lbl + '</label>';
       html += '<label style="display:flex;align-items:center;gap:8px;margin-bottom:8px;opacity:0.7;">'
-        + '<input type="checkbox" checked disabled> Points moy. ' + lbl + '</label>';
+        + '<input type="checkbox" id="auto-col-'+r+'-moy" name="auto-col-'+r+'-moy" checked disabled> Points moy. ' + lbl + '</label>';
     });
     html += '<div style="font-size:0.75rem;color:var(--text2);font-style:italic;">Ces colonnes sont toujours incluses.</div>';
   }
@@ -2809,7 +2865,7 @@ function buildAdminCSVCols() {
   if(!el) return;
   el.innerHTML = csvCols.map((col,i) =>
     '<label style="display:flex;align-items:center;gap:8px;margin-bottom:8px;cursor:pointer;">'
-    + '<input type="checkbox" name="adm-csv-col-'+i+'" ' + (col.checked?'checked':'') + ' onchange="csvCols['+i+'].checked=this.checked"> '
+    + '<input type="checkbox" id="adm-csv-col-'+i+'" name="adm-csv-col-'+i+'" ' + (col.checked?'checked':'') + ' onchange="csvCols['+i+'].checked=this.checked"> '
     + col.label + '</label>'
   ).join('');
 }
@@ -2832,11 +2888,11 @@ function buildAdminBaremes() {
       + '<span style="width:60px;text-align:center;">Points</span><span style="flex:1;">Intitulé</span></div>'
       + bareme[entry.key].map(function(item, i) {
         return '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">'
-          + '<input type="number" data-bkey="'+entry.key+'" data-bidx="'+i+'" data-btype="pts"'
-          +   ' value="'+item.pts+'" min="0" max="10"'
+          + '<input type="number" id="br-'+entry.key+'-'+i+'-pts" name="br-'+entry.key+'-'+i+'-pts" data-bkey="'+entry.key+'" data-bidx="'+i+'" data-btype="pts"'
+          +   ' value="'+item.pts+'" min="0" max="10" autocomplete="off"'
           +   ' style="width:60px;text-align:center;font-weight:700;">'
-          + '<input type="text" data-bkey="'+entry.key+'" data-bidx="'+i+'" data-btype="lbl"'
-          +   ' value="'+item.label.replace(/&/g,'&amp;').replace(/"/g,'&quot;')+'"'
+          + '<input type="text" id="br-'+entry.key+'-'+i+'-lbl" name="br-'+entry.key+'-'+i+'-lbl" data-bkey="'+entry.key+'" data-bidx="'+i+'" data-btype="lbl"'
+          +   ' value="'+item.label.replace(/&/g,'&amp;').replace(/"/g,'&quot;')+'" autocomplete="off"'
           +   ' style="flex:1;">'
           + '</div>';
       }).join('');
