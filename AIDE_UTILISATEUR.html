@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VB EPS — Guide d'utilisation</title>
+<style>
+:root {
+  --primary: #7c3aed;
+  --primary-dark: #5b21b6;
+  --primary-light: #ede9fe;
+  --success: #059669;
+  --warn: #ea580c;
+  --danger: #dc2626;
+  --bg: #f5f3ff;
+  --card: #ffffff;
+  --text: #1e1b4b;
+  --text2: #6b7280;
+  --border: #e0d9ff;
+  --radius: 14px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* ── En-tête ── */
+.hero {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: #fff;
+  padding: 40px 24px 32px;
+  text-align: center;
+}
+.hero h1 { font-size: 2rem; font-weight: 800; margin-bottom: 6px; }
+.hero p  { font-size: 1.05rem; opacity: 0.88; }
+.badge {
+  display: inline-block;
+  background: rgba(255,255,255,0.2);
+  border-radius: 20px;
+  padding: 4px 14px;
+  font-size: 0.85rem;
+  margin-top: 12px;
+}
+
+/* ── Sommaire ── */
+nav {
+  background: var(--card);
+  border-bottom: 2px solid var(--border);
+  padding: 16px 24px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+nav ul {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+}
+nav a {
+  color: var(--primary);
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+nav a:hover { text-decoration: underline; }
+
+/* ── Contenu ── */
+main {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 32px 20px 60px;
+}
+
+section { margin-bottom: 48px; }
+h2 {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--primary);
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 3px solid var(--primary-light);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 24px 0 10px;
+}
+
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 14px;
+  border: 1px solid var(--border);
+  box-shadow: 0 2px 12px rgba(124,58,237,0.08);
+}
+
+/* ── Étapes numérotées ── */
+.steps { counter-reset: step; }
+.step {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+  align-items: flex-start;
+}
+.step::before {
+  counter-increment: step;
+  content: counter(step);
+  background: var(--primary);
+  color: #fff;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.95rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.step-body { flex: 1; }
+.step-body strong { display: block; font-size: 1rem; margin-bottom: 4px; }
+.step-body p, .step-body ul { color: var(--text2); font-size: 0.95rem; }
+.step-body ul { padding-left: 18px; margin-top: 4px; }
+
+/* ── Grilles de modes ── */
+.mode-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+}
+.mode-item {
+  background: var(--primary-light);
+  border-radius: 10px;
+  padding: 14px;
+  border-left: 4px solid var(--primary);
+}
+.mode-item .mode-title { font-weight: 700; color: var(--primary); margin-bottom: 4px; }
+.mode-item .mode-desc  { font-size: 0.85rem; color: var(--text2); }
+
+/* ── Tableaux barèmes ── */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+  margin-top: 8px;
+}
+thead th {
+  background: var(--primary);
+  color: #fff;
+  padding: 10px 14px;
+  text-align: left;
+  font-weight: 700;
+}
+tbody tr:nth-child(even) { background: var(--primary-light); }
+tbody td { padding: 9px 14px; border-bottom: 1px solid var(--border); }
+td:first-child { font-weight: 700; color: var(--primary); width: 60px; text-align: center; }
+
+/* ── Alertes ── */
+.alert {
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin: 16px 0;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  font-size: 0.95rem;
+}
+.alert-icon { font-size: 1.3rem; flex-shrink: 0; }
+.alert-info    { background: #eff6ff; border-left: 4px solid #2563eb; }
+.alert-warn    { background: #fff7ed; border-left: 4px solid var(--warn); }
+.alert-success { background: #ecfdf5; border-left: 4px solid var(--success); }
+.alert-danger  { background: #fef2f2; border-left: 4px solid var(--danger); }
+
+/* ── Touches clavier / boutons illustrés ── */
+.btn-demo {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--primary);
+  color: #fff;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  vertical-align: middle;
+}
+.btn-demo.success { background: var(--success); }
+.btn-demo.danger  { background: var(--danger); }
+.btn-demo.warn    { background: var(--warn); }
+.btn-demo.ghost   { background: transparent; border: 2px solid var(--border); color: var(--text); }
+
+kbd {
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: 5px;
+  padding: 2px 8px;
+  font-size: 0.85rem;
+  font-family: monospace;
+  color: var(--text);
+}
+
+/* ── Flux de navigation ── */
+.flow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0;
+}
+.flow-step {
+  background: var(--primary-light);
+  color: var(--primary);
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  border: 2px solid var(--primary);
+}
+.flow-arrow { color: var(--primary); font-size: 1.2rem; font-weight: 700; }
+
+/* ── Astuce pro ── */
+.tip {
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  border-radius: 10px;
+  padding: 14px 18px;
+  font-size: 0.92rem;
+  margin: 12px 0;
+  border-left: 4px solid #f59e0b;
+}
+.tip strong { color: #92400e; }
+
+/* ── Pied de page ── */
+footer {
+  text-align: center;
+  padding: 30px 20px;
+  color: var(--text2);
+  font-size: 0.85rem;
+  border-top: 2px solid var(--border);
+}
+
+/* ── Impression ── */
+@media print {
+  nav, .no-print { display: none; }
+  body { font-size: 13px; background: white; }
+  .hero { background: var(--primary) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  main { max-width: 100%; padding: 16px; }
+  section { page-break-inside: avoid; }
+  a { color: inherit; text-decoration: none; }
+}
+
+@media (max-width: 600px) {
+  .hero h1 { font-size: 1.5rem; }
+  .mode-grid { grid-template-columns: 1fr 1fr; }
+  nav ul { gap: 6px 14px; }
+  nav a { font-size: 0.8rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════
+     EN-TÊTE
+══════════════════════════════════════════════ -->
+<div class="hero">
+  <h1>🏐 VB EPS — Guide d'utilisation</h1>
+  <p>Application d'observation et d'évaluation en Volleyball</p>
+  <span class="badge">Collège &amp; Lycée · 100 % hors ligne</span>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SOMMAIRE
+══════════════════════════════════════════════ -->
+<nav>
+  <ul>
+    <li><a href="#demarrage">1. Démarrage</a></li>
+    <li><a href="#navigation">2. Navigation</a></li>
+    <li><a href="#modes">3. Modes d'observation</a></li>
+    <li><a href="#observation">4. Faire une observation</a></li>
+    <li><a href="#baremes">5. Barèmes</a></li>
+    <li><a href="#export">6. Export &amp; QR</a></li>
+    <li><a href="#prof">7. Mode Professeur</a></li>
+    <li><a href="#astuces">8. Astuces</a></li>
+  </ul>
+</nav>
+
+<main>
+
+<!-- ══════════════════════════════════════════════
+     1. DÉMARRAGE
+══════════════════════════════════════════════ -->
+<section id="demarrage">
+  <h2>🚀 1. Démarrage</h2>
+
+  <div class="card">
+    <h3>Installer l'application sur la tablette</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-body">
+          <strong>Ouvrir l'URL dans le navigateur</strong>
+          <p>Sur Android : ouvrir <strong>Chrome</strong>. Sur iPad : ouvrir <strong>Safari</strong>.<br>
+          Saisir l'adresse fournie par le professeur.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-body">
+          <strong>Installer l'application</strong>
+          <p><em>Android (Chrome) :</em> Menu ⋮ → <strong>«&nbsp;Ajouter à l'écran d'accueil&nbsp;»</strong><br>
+          <em>iPad (Safari) :</em> Bouton partage ↑ → <strong>«&nbsp;Sur l'écran d'accueil&nbsp;»</strong></p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-body">
+          <strong>Lancer VB EPS depuis l'écran d'accueil</strong>
+          <p>L'application s'ouvre en plein écran, sans barre du navigateur.<br>
+          Elle fonctionne <strong>sans connexion internet</strong> une fois installée.</p>
+        </div>
+      </div>
+    </div>
+    <div class="alert alert-info">
+      <span class="alert-icon">ℹ️</span>
+      <div>La première ouverture nécessite une connexion pour télécharger l'application.
+      Ensuite, tout fonctionne en gymnase ou sur terrain sans WiFi.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     2. NAVIGATION
+══════════════════════════════════════════════ -->
+<section id="navigation">
+  <h2>🗺️ 2. Navigation dans l'application</h2>
+
+  <div class="card">
+    <p style="margin-bottom:14px;">L'application se compose de <strong>5 écrans</strong> parcourus dans l'ordre :</p>
+    <div class="flow">
+      <span class="flow-step">🏠 Accueil</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-step">👤 Identités</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-step">⚙️ Config mode</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-step">📊 Observation</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-step">📤 Export</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Barre du haut (topbar)</h3>
+    <table>
+      <thead><tr><th>Bouton</th><th>Action</th></tr></thead>
+      <tbody>
+        <tr><td>📋</td><td>Accéder aux <strong>observations en cours</strong> (liste des séances archivées)</td></tr>
+        <tr><td>⚙️</td><td>Ouvrir les <strong>réglages</strong> (thème, chrono, vibration, mode prof)</td></tr>
+        <tr><td>← Retour</td><td>Revenir à l'écran précédent sans perdre les données</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="alert alert-warn">
+    <span class="alert-icon">⚠️</span>
+    <div>Le bouton <strong>«&nbsp;Nouvelle séance (vider cache)&nbsp;»</strong> efface toutes les données de la séance en cours.
+    À utiliser seulement en début de nouvelle séance.</div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     3. MODES D'OBSERVATION
+══════════════════════════════════════════════ -->
+<section id="modes">
+  <h2>🎯 3. Modes d'observation</h2>
+
+  <div class="card">
+    <p style="margin-bottom:16px;">À l'écran <strong>Config mode</strong>, choisir :</p>
+
+    <h3>Niveau</h3>
+    <div class="mode-grid" style="margin-bottom:20px;">
+      <div class="mode-item">
+        <div class="mode-title">🏫 Collège</div>
+        <div class="mode-desc">Barème adapté aux élèves de 6e–3e</div>
+      </div>
+      <div class="mode-item">
+        <div class="mode-title">🎓 Lycée</div>
+        <div class="mode-desc">Barème adapté aux élèves de 2nde–Terminale</div>
+      </div>
+    </div>
+
+    <h3>Type d'évaluation</h3>
+    <div class="mode-grid" style="margin-bottom:20px;">
+      <div class="mode-item">
+        <div class="mode-title">🧍 Individuel</div>
+        <div class="mode-desc">Observation d'un seul joueur (Serveur, Réceptionneur, Renvoyeur ou combiné)</div>
+      </div>
+      <div class="mode-item">
+        <div class="mode-title">👥 Collectif</div>
+        <div class="mode-desc">Observation d'une équipe — nombre de touches de balle avant renvoi</div>
+      </div>
+    </div>
+
+    <h3>Rôle(s) observé(s) — mode Individuel</h3>
+    <div class="mode-grid">
+      <div class="mode-item">
+        <div class="mode-title">🏐 Serveur</div>
+        <div class="mode-desc">Type de service et réussite — noté 0 à 4 pts</div>
+      </div>
+      <div class="mode-item">
+        <div class="mode-title">🤲 Réceptionneur</div>
+        <div class="mode-desc">Qualité de la réception — notée 0 à 4 pts</div>
+      </div>
+      <div class="mode-item">
+        <div class="mode-title">💥 Renvoyeur</div>
+        <div class="mode-desc">Type et qualité du renvoi — noté 0 à 4 pts</div>
+      </div>
+      <div class="mode-item">
+        <div class="mode-title">🤲💥 Récep. + Renvoi</div>
+        <div class="mode-desc">Les deux rôles sur la même séance</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     4. FAIRE UNE OBSERVATION
+══════════════════════════════════════════════ -->
+<section id="observation">
+  <h2>📊 4. Faire une observation</h2>
+
+  <div class="card">
+    <h3>Déroulement d'une séance complète</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-body">
+          <strong>Saisir la classe (écran Accueil)</strong>
+          <p>La date et l'heure se remplissent automatiquement. Vous pouvez les désactiver pour les saisir manuellement.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-body">
+          <strong>Saisir les identités (écran Identités)</strong>
+          <p>Prénom et Nom de l'<strong>observateur</strong> (l'élève qui observe) et du <strong>joueur observé</strong>.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-body">
+          <strong>Configurer le mode (écran Config)</strong>
+          <p>Choisir le niveau (Collège/Lycée), le type (Individuel/Collectif) et le(s) rôle(s) à observer.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-body">
+          <strong>Observer et noter (écran Observation)</strong>
+          <ul>
+            <li>Le <strong>chronomètre</strong> démarre automatiquement (réglable : 3 à 10 min).</li>
+            <li>Appuyer sur le <strong>bouton correspondant au geste</strong> réalisé.</li>
+            <li>Chaque appui enregistre 1 action et la fait vibrer pour confirmer.</li>
+            <li>Le compteur et le total en temps réel s'affichent à l'écran.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-body">
+          <strong>Archiver ou terminer</strong>
+          <p>
+            <span class="btn-demo success">✅ Nouvelle observation</span> — archive ce joueur et retourne saisir un autre joueur (jusqu'à 5 par séance).<br><br>
+            <span class="btn-demo">📤 Enregistrer la séance</span> — termine et passe à l'export.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="tip">
+      <strong>💡 Astuce chrono :</strong> Appuyer sur le chronomètre pour le mettre en pause / reprendre.
+      Il s'arrête automatiquement à zéro mais l'observation continue.
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Limite de la séance</h3>
+    <p>L'application gère jusqu'à <strong>5 observations</strong> par séance pour garantir la lisibilité du QR code à l'export.
+    Au-delà, enregistrer la séance en cours, exporter, puis démarrer une nouvelle séance.</p>
+  </div>
+
+  <div class="card">
+    <h3>Dictée vocale (optionnelle)</h3>
+    <p>Activer dans ⚙️ Réglages → <strong>Dictée vocale</strong>. Dire à voix haute le geste observé :</p>
+    <table>
+      <thead><tr><th>Dire</th><th>Action enregistrée</th></tr></thead>
+      <tbody>
+        <tr><td colspan="2" style="font-weight:700; color: var(--text2); font-size:0.85rem;">Serveur</td></tr>
+        <tr><td>«&nbsp;tennis&nbsp;»</td><td>4 pts — Service tennis réussi</td></tr>
+        <tr><td>«&nbsp;cuillère&nbsp;»</td><td>3 pts — Cuillère réussie</td></tr>
+        <tr><td>«&nbsp;passe&nbsp;»</td><td>1 pt — Passe haute</td></tr>
+        <tr><td>«&nbsp;raté&nbsp;» / «&nbsp;zéro&nbsp;»</td><td>0 pt — Service raté</td></tr>
+        <tr><td colspan="2" style="font-weight:700; color: var(--text2); font-size:0.85rem;">Renvoyeur</td></tr>
+        <tr><td>«&nbsp;smashé&nbsp;»</td><td>4 pts — Smash réussi</td></tr>
+        <tr><td>«&nbsp;placé&nbsp;»</td><td>3 pts — Renvoi placé</td></tr>
+        <tr><td>«&nbsp;dos&nbsp;»</td><td>1 pt — Dos au filet</td></tr>
+      </tbody>
+    </table>
+    <div class="alert alert-info" style="margin-top:12px;">
+      <span class="alert-icon">🎤</span>
+      <div>La dictée vocale nécessite l'autorisation du microphone. Elle fonctionne hors ligne une fois accordée.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     5. BARÈMES
+══════════════════════════════════════════════ -->
+<section id="baremes">
+  <h2>📋 5. Barèmes par défaut</h2>
+
+  <div class="card">
+    <h3>🏐 Service — Collège</h3>
+    <table>
+      <thead><tr><th>Pts</th><th>Geste</th></tr></thead>
+      <tbody>
+        <tr><td>4</td><td>Service tennis réussi</td></tr>
+        <tr><td>3</td><td>Cuillère à 7 m réussie</td></tr>
+        <tr><td>2</td><td>Cuillère à 5 m réussie</td></tr>
+        <tr><td>1</td><td>Passe haute à 3 m réussie</td></tr>
+        <tr><td>0</td><td>Service raté</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>🏐 Service — Lycée</h3>
+    <table>
+      <thead><tr><th>Pts</th><th>Geste</th></tr></thead>
+      <tbody>
+        <tr><td>4</td><td>Tennis tendu et frappé</td></tr>
+        <tr><td>3</td><td>Tennis assuré réussi</td></tr>
+        <tr><td>2</td><td>Cuillère tendu réussie</td></tr>
+        <tr><td>1</td><td>Cuillère haut/hasardeuse réussie</td></tr>
+        <tr><td>0</td><td>Service raté</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>🤲 Réception — Collège &amp; Lycée</h3>
+    <table>
+      <thead><tr><th>Pts</th><th>Geste</th></tr></thead>
+      <tbody>
+        <tr><td>4</td><td>Haute sur passeur</td></tr>
+        <tr><td>3</td><td>Haute vers zone avant</td></tr>
+        <tr><td>2</td><td>Tendue sur passeur</td></tr>
+        <tr><td>1</td><td>Tendue vers zone avant</td></tr>
+        <tr><td>0</td><td>Réception ratée</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>💥 Renvoi — Collège</h3>
+    <table>
+      <thead><tr><th>Pts</th><th>Geste</th></tr></thead>
+      <tbody>
+        <tr><td>4</td><td>Frappé en extension réussi</td></tr>
+        <tr><td>3</td><td>Placé réussi</td></tr>
+        <tr><td>2</td><td>Sans intention réussi</td></tr>
+        <tr><td>1</td><td>Dos au filet</td></tr>
+        <tr><td>0</td><td>Renvoi raté</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>💥 Renvoi — Lycée</h3>
+    <table>
+      <thead><tr><th>Pts</th><th>Geste</th></tr></thead>
+      <tbody>
+        <tr><td>4</td><td>Smashé réussi</td></tr>
+        <tr><td>3</td><td>Tendu et placé réussi</td></tr>
+        <tr><td>2</td><td>Sur l'adversaire</td></tr>
+        <tr><td>1</td><td>Dos au filet</td></tr>
+        <tr><td>0</td><td>Renvoi raté</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>👥 Collectif — Collège</h3>
+    <table>
+      <thead><tr><th>Pts</th><th>Nombre de touches</th></tr></thead>
+      <tbody>
+        <tr><td>3</td><td>3 touches de balle avant renvoi</td></tr>
+        <tr><td>2</td><td>2 touches de balle avant renvoi</td></tr>
+        <tr><td>1</td><td>1 touche de balle avant renvoi</td></tr>
+        <tr><td>0</td><td>Ballon non renvoyé</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>👥 Collectif — Lycée</h3>
+    <table>
+      <thead><tr><th>Pts</th><th>Type de renvoi</th></tr></thead>
+      <tbody>
+        <tr><td>4</td><td>Renvoi smashé</td></tr>
+        <tr><td>3</td><td>Placé tendu zone arrière</td></tr>
+        <tr><td>2</td><td>Placé tendu zone avant</td></tr>
+        <tr><td>1</td><td>Haut ou à l'aveugle</td></tr>
+        <tr><td>0</td><td>Ballon non renvoyé</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     6. EXPORT
+══════════════════════════════════════════════ -->
+<section id="export">
+  <h2>📤 6. Export CSV &amp; QR code</h2>
+
+  <div class="card">
+    <h3>Export CSV (tableur)</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-body">
+          <strong>Appuyer sur «&nbsp;Télécharger CSV&nbsp;»</strong>
+          <p>Le fichier se nomme automatiquement : <kbd>EPS_Volleyball_4eA_2025-04-10.csv</kbd></p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-body">
+          <strong>Ouvrir dans Excel ou LibreOffice</strong>
+          <p>Le séparateur est le point-virgule (<kbd>;</kbd>), compatible avec Excel en français.<br>
+          Si les colonnes ne se séparent pas, aller dans <em>Données → Convertir</em> et choisir <strong>«&nbsp;point-virgule&nbsp;»</strong>.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="margin-top:16px;">Colonnes du fichier CSV</h3>
+    <table>
+      <thead><tr><th>Colonne</th><th>Contenu</th></tr></thead>
+      <tbody>
+        <tr><td style="width:auto">joueur</td><td>Prénom Nom du joueur observé</td></tr>
+        <tr><td>classe</td><td>Classe saisie à l'accueil</td></tr>
+        <tr><td>observateur</td><td>Prénom Nom de l'élève observateur</td></tr>
+        <tr><td>date / heure</td><td>Date et heure de la séance</td></tr>
+        <tr><td>mode / niveau</td><td>Ex. : «&nbsp;Individuel&nbsp;» / «&nbsp;Collège&nbsp;»</td></tr>
+        <tr><td>role</td><td>Ex. : «&nbsp;Serveur&nbsp;», «&nbsp;Renvoyeur&nbsp;»…</td></tr>
+        <tr><td>total_pts_*</td><td>Total de points par rôle</td></tr>
+        <tr><td>pts_moy_*</td><td>Points moyens par action</td></tr>
+        <tr><td>detail_scores</td><td>Liste brute de tous les scores (désactivée par défaut)</td></tr>
+      </tbody>
+    </table>
+    <div class="alert alert-info" style="margin-top:12px;">
+      <span class="alert-icon">ℹ️</span>
+      <div>Les colonnes exportées sont configurables en mode Professeur (⚙️ → <strong>ADMINPROF</strong> → section Export).</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>QR code (partage rapide)</h3>
+    <p style="margin-bottom:12px;">Un QR code est généré automatiquement à partir des données de la séance.</p>
+    <ul style="padding-left:20px; color: var(--text2); font-size:0.95rem;">
+      <li>Scanner avec un autre smartphone ou tablette pour recevoir les données.</li>
+      <li>Maximum <strong>5 observations</strong> par QR code (limite de lisibilité).</li>
+      <li>Fonctionne <strong>100 % hors ligne</strong> — aucune connexion nécessaire.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     7. MODE PROFESSEUR
+══════════════════════════════════════════════ -->
+<section id="prof">
+  <h2>🔒 7. Mode Professeur</h2>
+
+  <div class="card">
+    <div class="alert alert-warn" style="margin-bottom:16px;">
+      <span class="alert-icon">🔑</span>
+      <div>Mot de passe : <strong style="font-size:1.1rem; letter-spacing:2px;">ADMINPROF</strong><br>
+      À ne pas communiquer aux élèves.</div>
+    </div>
+
+    <h3>Accès</h3>
+    <p>⚙️ Réglages → section <strong>«&nbsp;Configuration avancée (Professeur)&nbsp;»</strong> → saisir le mot de passe.</p>
+
+    <h3 style="margin-top:20px;">Fonctionnalités disponibles</h3>
+    <table>
+      <thead><tr><th>Option</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td style="width:auto; font-weight:600; color:var(--text)">Barèmes</td><td>Modifier les libellés et points de chacun des 7 barèmes (service/réception/renvoi × collège/lycée + collectif)</td></tr>
+        <tr><td style="font-weight:600; color:var(--text)">Chronomètre</td><td>Durée de la séance (3 à 10 min, défaut : 5 min)</td></tr>
+        <tr><td style="font-weight:600; color:var(--text)">Équipe</td><td>Nombre de joueurs par équipe (2 à 6, défaut : 4)</td></tr>
+        <tr><td style="font-weight:600; color:var(--text)">Export CSV</td><td>Choisir quelles colonnes apparaissent dans le fichier téléchargé</td></tr>
+        <tr><td style="font-weight:600; color:var(--text)">Réinitialisation</td><td>Bouton «&nbsp;Réinitialiser les barèmes par défaut&nbsp;» pour revenir aux valeurs d'origine</td></tr>
+      </tbody>
+    </table>
+
+    <div class="alert alert-warn" style="margin-top:16px;">
+      <span class="alert-icon">⚠️</span>
+      <div>Les barèmes modifiés sont <strong>locaux à chaque tablette</strong> (stockés dans la mémoire de la tablette).
+      Si vous redistribuez l'application sur d'autres tablettes, les modifications ne se propagent pas automatiquement.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     8. ASTUCES
+══════════════════════════════════════════════ -->
+<section id="astuces">
+  <h2>💡 8. Astuces &amp; questions fréquentes</h2>
+
+  <div class="card">
+    <h3>L'application ne s'installe pas sur iPad</h3>
+    <p>L'installation PWA sur iOS nécessite <strong>Safari</strong> (pas Chrome ni Firefox).
+    Ouvrir l'URL dans Safari, puis bouton de partage ↑ → «&nbsp;Sur l'écran d'accueil&nbsp;».</p>
+  </div>
+
+  <div class="card">
+    <h3>Les données ont disparu après fermeture</h3>
+    <p>Les données sont sauvegardées dans la mémoire locale de la tablette (localStorage).
+    Elles persistent entre les sessions sauf si :</p>
+    <ul style="padding-left:20px; margin-top:8px; color:var(--text2);">
+      <li>Le bouton «&nbsp;Nouvelle séance (vider cache)&nbsp;» a été appuyé.</li>
+      <li>Le navigateur a été configuré pour effacer les données à la fermeture.</li>
+      <li>La mémoire de l'appareil a été nettoyée manuellement.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>Le CSV ne s'ouvre pas correctement dans Excel</h3>
+    <p>Excel attend parfois un séparateur virgule. Solution : dans Excel → <em>Données → Données externes → À partir du texte</em>,
+    choisir <strong>séparateur : point-virgule</strong>. Sur Mac : importer via «&nbsp;Données → Nouveau texte CSV&nbsp;».</p>
+  </div>
+
+  <div class="card">
+    <h3>Organiser une évaluation en classe entière</h3>
+    <div class="tip">
+      <strong>✅ Workflow recommandé :</strong><br>
+      1 tablette = 1 observateur. Chaque observateur observe 1 joueur pendant la séance (5 min).<br>
+      À la fin, chaque tablette exporte son CSV. Le professeur collecte les fichiers (clé USB ou QR code).
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Activer / désactiver le mode sombre</h3>
+    <p>⚙️ Réglages → <strong>Mode sombre</strong>. Le thème est mémorisé entre les sessions.</p>
+  </div>
+
+  <div class="card">
+    <h3>Changer la couleur de l'interface</h3>
+    <p>⚙️ Réglages → <strong>Couleur du thème</strong> : Violet (défaut), Vert, Orange, Bleu.</p>
+  </div>
+
+  <div class="card">
+    <h3>La dictée vocale ne fonctionne pas</h3>
+    <p>Vérifier que :</p>
+    <ul style="padding-left:20px; margin-top:8px; color:var(--text2);">
+      <li>L'autorisation microphone est accordée dans les réglages du navigateur.</li>
+      <li>La langue de l'appareil est réglée sur le français.</li>
+      <li>Le toggle «&nbsp;Dictée vocale&nbsp;» est bien activé dans ⚙️ Réglages.</li>
+    </ul>
+    <div class="alert alert-info" style="margin-top:10px;">
+      <span class="alert-icon">ℹ️</span>
+      <div>La dictée vocale utilise l'API du système et peut être limitée sur certaines versions d'iOS.</div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p><strong>VB EPS — Volleyball</strong> · Application EPS Collège &amp; Lycée</p>
+  <p style="margin-top:6px;">Fonctionne 100 % hors ligne · Données stockées localement sur chaque tablette</p>
+</footer>
+
+</body>
+</html>

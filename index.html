@@ -6,6 +6,10 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#7c3aed">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" sizes="192x192" href="icon_192.png">
+<link rel="apple-touch-icon" sizes="512x512" href="icon_512.png">
+<link rel="shortcut icon" href="icon_192.png" type="image/png">
 <title>VB EPS — Volleyball</title>
 <style>
 :root {
@@ -3039,13 +3043,23 @@ function scoreCls(pts) {
 // SERVICE WORKER (PWA)
 // ==============================
 // Service Worker — uniquement sur http/https (pas sur file:// ni null)
-if('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
-  try {
-    const swCode = "self.addEventListener('install',e=>self.skipWaiting());self.addEventListener('activate',e=>self.clients.claim());self.addEventListener('fetch',e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)));});";
-    const blob = new Blob([swCode], {type:'application/javascript'});
-    const swUrl = URL.createObjectURL(blob);
-    navigator.serviceWorker.register(swUrl);
-  } catch(e) {}
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then(reg => {
+        // Vérifier les mises à jour
+        reg.addEventListener('updatefound', () => {
+          const newWorker = reg.installing;
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              // Nouvelle version disponible — on l'active immédiatement
+              newWorker.postMessage({ type: 'SKIP_WAITING' });
+            }
+          });
+        });
+      })
+      .catch(err => console.warn('SW registration failed:', err));
+  });
 }
 
 
