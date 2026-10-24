@@ -17,6 +17,9 @@ google-services.properties
 # Fichiers de sauvegarde
 *.bak
 
+# Notes de travail locales
+todo.md
+
 # Système
 .DS_Store
 Thumbs.db
