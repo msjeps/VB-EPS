@@ -4,13 +4,14 @@
  * Compatible Android (Chrome) + iOS (Safari 16.4+)
  */
 
-const CACHE_NAME = 'vb-eps-v3.1';
+const CACHE_NAME = 'vb-eps-v3.2';
 const CACHE_ASSETS = [
   './',
   './index.html',
   './manifest.json',
   './icon_192.png',
-  './icon_512.png'
+  './icon_512.png',
+  './logo-outils-eps.png'
 ];
 
 /* ── INSTALL : mise en cache initiale ── */

@@ -6,10 +6,6 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#7c3aed">
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" sizes="192x192" href="icon_192.png">
-<link rel="apple-touch-icon" sizes="512x512" href="icon_512.png">
-<link rel="shortcut icon" href="icon_192.png" type="image/png">
 <title>VB EPS — Volleyball</title>
 <style>
 :root {
@@ -18,10 +14,10 @@
   --bg:#f5f3ff; --card:#ffffff; --text:#1e1b4b; --text2:#6b7280;
   --border:#e0d9ff; --shadow:0 4px 24px rgba(124,58,237,0.12);
   --radius:18px; --radius-sm:10px;
-}
-body.dark {
-  --bg:#13111c; --card:#1e1b2e; --text:#f0eeff; --text2:#a09ab8;
-  --border:#332d5e; --shadow:0 4px 24px rgba(0,0,0,0.4); --primary-light:#2d2150;
+  /* Alias design system EPS (DESIGN-SYSTEM-EPS.md) */
+  --couleur-primaire:var(--primary); --couleur-fond:var(--bg); --couleur-texte:var(--text);
+  --couleur-blanc:var(--card); --couleur-accent:var(--accent); --couleur-secondaire:var(--success);
+  --couleur-danger:var(--danger); --ombre-douce:var(--shadow); --rayon:var(--radius);
 }
 body.theme-green  { --primary:#059669; --primary-dark:#047857; --primary-light:#d1fae5; }
 body.theme-orange { --primary:#ea580c; --primary-dark:#c2410c; --primary-light:#fff7ed; }
@@ -29,7 +25,7 @@ body.theme-blue   { --primary:#2563eb; --primary-dark:#1d4ed8; --primary-light:#
 
 *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
 html, body { height:100%; overflow:hidden; }
-body { font-family:'Segoe UI',system-ui,sans-serif; background:var(--bg); color:var(--text); font-size:16px; }
+body { font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; background:var(--bg); color:var(--text); font-size:16px; }
 
 /* 100dvh tient compte de la barre du navigateur sur mobile (Safari/Chrome) */
 #app { height:100vh; height:100dvh; display:flex; flex-direction:column; overflow:hidden; }
@@ -44,7 +40,7 @@ body { font-family:'Segoe UI',system-ui,sans-serif; background:var(--bg); color:
 .screen.active { display:block; }
 .banner-wrap { margin:-16px -16px 16px; overflow:hidden; }
 
-.card { background:var(--card); border-radius:var(--radius); padding:18px; margin-bottom:14px; box-shadow:var(--shadow); border:1px solid var(--border); }
+.card { background:var(--card); border-radius:var(--radius); padding:18px; margin-bottom:14px; box-shadow:var(--shadow); border:1px solid var(--border); border-left:5px solid var(--primary); }
 .card-title { font-size:1rem; font-weight:700; color:var(--primary); margin-bottom:12px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
 
 .form-group { margin-bottom:14px; }
@@ -57,8 +53,9 @@ input:focus, select:focus { border-color:var(--primary); }
 .form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
 
 .btn { display:flex; align-items:center; justify-content:center; gap:8px; padding:16px 24px;
-  border:none; border-radius:var(--radius-sm); font-size:1rem; font-weight:700; cursor:pointer;
-  transition:all 0.15s; min-height:56px; user-select:none; -webkit-user-select:none; }
+  border:none; border-radius:25px; font-size:1rem; font-weight:700; cursor:pointer;
+  transition:all 0.15s; min-height:56px; user-select:none; -webkit-user-select:none;
+  text-transform:uppercase; letter-spacing:0.5px; }
 .btn:active { transform:scale(0.96); }
 .btn-primary { background:var(--primary); color:#fff; box-shadow:0 4px 14px rgba(124,58,237,0.3); }
 .btn-primary:hover { background:var(--primary-dark); }
@@ -66,7 +63,7 @@ input:focus, select:focus { border-color:var(--primary); }
 .btn-danger  { background:var(--danger); color:#fff; }
 .btn-warn    { background:var(--warn); color:#fff; }
 .btn-ghost   { background:transparent; border:2px solid var(--border); color:var(--text); }
-.btn-xl { min-height:72px; font-size:1.15rem; border-radius:14px; }
+.btn-xl { min-height:72px; font-size:1.15rem; }
 .btn-full { width:100%; }
 .btn-grid { display:grid; gap:10px; }
 .btn-grid-2 { grid-template-columns:1fr 1fr; }
@@ -170,7 +167,7 @@ input:checked + .toggle-slider:before { transform:translateX(24px); }
   select, input[type=password] { padding: 18px 20px; font-size: 1.1rem; border-radius: 14px; }
 
   /* Boutons génériques */
-  .btn { min-height: 74px; font-size: 1.2rem; padding: 18px 28px; border-radius: 14px; }
+  .btn { min-height: 74px; font-size: 1.2rem; padding: 18px 28px; }
   .btn-xl { min-height: 92px; font-size: 1.4rem; }
 
   /* Boutons de score (les plus importants) */
@@ -313,6 +310,38 @@ input:checked + .toggle-slider:before { transform:translateX(24px); }
   .combo-grid .score-btn .pts { font-size: 1.3rem; min-width: 40px; }
   .combo-grid .score-btn .lbl { font-size: 0.75rem; }
 }
+
+/* ── MODE SOMBRE (renommage body.dark → body.mode-sombre) ── */
+body.mode-sombre {
+  --bg:#13111c; --card:#1e1b2e; --text:#f0eeff; --text2:#a09ab8;
+  --border:#332d5e; --shadow:0 4px 24px rgba(0,0,0,0.4); --primary-light:#2d2150;
+}
+
+/* ── PIED DE PAGE OUTILS-EPS (design system §2) ── */
+.pied-page {
+  display:flex; align-items:center; justify-content:center;
+  gap:10px; margin-top:30px; padding-top:20px;
+  border-top:1px solid rgba(128,128,128,0.3);
+}
+.pied-page-logo { width:36px; height:36px; border-radius:8px; flex-shrink:0; }
+.pied-page p { font-size:0.85em; opacity:0.7; }
+
+/* ── STEPPER +/− (design system §6) ── */
+.stepper-nombre { display:flex; align-items:stretch; gap:8px; }
+.stepper-nombre input[type="number"] { text-align:center; flex:1; min-width:0; width:auto; }
+.stepper-btn {
+  flex-shrink:0; width:44px; min-height:44px;
+  border:2px solid var(--border); border-radius:10px;
+  background:#FAFAFA; font-size:1.3em; font-weight:700; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+}
+.stepper-btn:hover, .stepper-btn:active {
+  background:var(--primary); color:white; border-color:var(--primary);
+}
+body.mode-sombre .stepper-btn { background:var(--card); color:var(--text); }
+@media (min-width:768px) {
+  .stepper-btn { width:52px; min-height:52px; font-size:1.5em; }
+}
 </style>
 </head>
 <body>
@@ -335,6 +364,7 @@ input:checked + .toggle-slider:before { transform:translateX(24px); }
   <div class="banner-wrap">
     <img id="home-banner" alt="VB EPS" style="width:100%;height:auto;display:block;object-fit:cover;">
     <div style="text-align:center;padding:4px 0 0;font-size:0.85rem;color:var(--text2);">Observation Volleyball — EPS</div>
+    <div style="text-align:center;padding:2px 0 4px;font-size:0.8rem;color:var(--text2);opacity:0.7;">Version 3.2</div>
   </div>
   <div class="card">
     <div class="card-title">🏫 Classe</div>
@@ -495,11 +525,19 @@ input:checked + .toggle-slider:before { transform:translateX(24px); }
     <div class="card-title">⚙️ Configuration</div>
     <div id="cfg-actions" class="form-group">
       <label for="nb-actions">Nombre d'actions à observer (5-30)</label>
-      <input type="number" id="nb-actions" name="nb-actions" value="10" min="5" max="30" style="width:120px;">
+      <div class="stepper-nombre">
+        <button type="button" class="stepper-btn" onclick="ajusterNombre('nb-actions',-1)" aria-label="Diminuer le nombre d'actions">−</button>
+        <input type="number" id="nb-actions" name="nb-actions" value="10" min="5" max="30">
+        <button type="button" class="stepper-btn" onclick="ajusterNombre('nb-actions',1)" aria-label="Augmenter le nombre d'actions">+</button>
+      </div>
     </div>
     <div id="cfg-match" class="form-group" style="display:none;">
       <label for="nb-points-match">Points pour gagner la manche</label>
-      <input type="number" id="nb-points-match" name="nb-points-match" value="15" min="5" max="50" style="width:120px;">
+      <div class="stepper-nombre">
+        <button type="button" class="stepper-btn" onclick="ajusterNombre('nb-points-match',-1)" aria-label="Diminuer les points pour gagner">−</button>
+        <input type="number" id="nb-points-match" name="nb-points-match" value="15" min="5" max="50">
+        <button type="button" class="stepper-btn" onclick="ajusterNombre('nb-points-match',1)" aria-label="Augmenter les points pour gagner">+</button>
+      </div>
     </div>
     <div class="toggle-row">
       <span class="toggle-label">⏱ Activer chronomètre</span>
@@ -507,7 +545,11 @@ input:checked + .toggle-slider:before { transform:translateX(24px); }
     </div>
     <div id="cfg-chrono" style="display:none;padding-top:10px;">
       <label for="chrono-duree">Durée (minutes)</label>
-      <input type="number" id="chrono-duree" name="chrono-duree" value="5" min="1" max="60" style="width:100px;">
+      <div class="stepper-nombre">
+        <button type="button" class="stepper-btn" onclick="ajusterNombre('chrono-duree',-1)" aria-label="Diminuer la durée du chrono">−</button>
+        <input type="number" id="chrono-duree" name="chrono-duree" value="5" min="1" max="60">
+        <button type="button" class="stepper-btn" onclick="ajusterNombre('chrono-duree',1)" aria-label="Augmenter la durée du chrono">+</button>
+      </div>
     </div>
   </div>
   <button class="btn btn-primary btn-full btn-xl" onclick="goToObs()">▶ Lancer l'observation</button>
@@ -558,6 +600,10 @@ input:checked + .toggle-slider:before { transform:translateX(24px); }
   <div class="card">
     <div class="card-title">🕐 Séances enregistrées</div>
     <div id="exp-history"></div>
+  </div>
+  <div class="pied-page">
+    <img src="logo-outils-eps.png" alt="Logo outils-eps.fr" class="pied-page-logo">
+    <p>https://outils-eps.fr par Nathalie Prenois</p>
   </div>
 </div>
 
@@ -615,14 +661,28 @@ input:checked + .toggle-slider:before { transform:translateX(24px); }
         <div class="form-group">
           <label for="admin-pwd">Mot de passe</label>
           <input type="password" id="admin-pwd" name="admin-pwd" autocomplete="current-password" placeholder="Mot de passe professeur" onkeydown="if(event.key==='Enter')checkAdmin()">
+          <p style="font-size:0.82rem;color:var(--text2);margin-top:6px;">Vous trouverez le mot de passe dans le guide professeur, sur la page de l'application du site outils-eps.fr.</p>
         </div>
         <button class="btn btn-primary btn-full" onclick="checkAdmin()">🔓 Accéder</button>
+        <button class="btn btn-ghost btn-full" id="btn-admin-reset" style="display:none;margin-top:8px;" onclick="resetAdminPwd()">🔑 Réinitialiser au mot de passe par défaut</button>
       </div>
       <div id="admin-panel" style="display:none;">
         <div class="card-title" style="margin-bottom:10px;">⏱ Chronomètre par défaut</div>
-        <div class="form-group"><label for="adm-chrono">Durée (min)</label><input type="number" id="adm-chrono" name="adm-chrono" value="5" min="1" max="60"></div>
+        <div class="form-group"><label for="adm-chrono">Durée (min)</label>
+          <div class="stepper-nombre">
+            <button type="button" class="stepper-btn" onclick="ajusterNombre('adm-chrono',-1)" aria-label="Diminuer la durée">−</button>
+            <input type="number" id="adm-chrono" name="adm-chrono" value="5" min="1" max="60">
+            <button type="button" class="stepper-btn" onclick="ajusterNombre('adm-chrono',1)" aria-label="Augmenter la durée">+</button>
+          </div>
+        </div>
         <div class="card-title" style="margin:14px 0 10px;">👥 Joueurs par équipe</div>
-        <div class="form-group"><label for="adm-players">Nombre (2-6)</label><input type="number" id="adm-players" name="adm-players" value="4" min="2" max="6"></div>
+        <div class="form-group"><label for="adm-players">Nombre (2-6)</label>
+          <div class="stepper-nombre">
+            <button type="button" class="stepper-btn" onclick="ajusterNombre('adm-players',-1)" aria-label="Diminuer le nombre de joueurs">−</button>
+            <input type="number" id="adm-players" name="adm-players" value="4" min="2" max="6">
+            <button type="button" class="stepper-btn" onclick="ajusterNombre('adm-players',1)" aria-label="Augmenter le nombre de joueurs">+</button>
+          </div>
+        </div>
         <div class="card-title" style="margin:14px 0 10px;">📤 Colonnes export CSV</div>
         <div id="adm-csv-cols"></div>
         <div class="card-title" style="margin:14px 0 10px;">🏐 Barème service collège</div>
@@ -893,7 +953,7 @@ function loadAll() {
 }
 
 function applyAllSettings() {
-  document.body.classList.toggle('dark', !!cfg.dark);
+  document.body.classList.toggle('mode-sombre', !!cfg.dark);
   applyTheme(cfg.theme, false);
   setchk('tog-dark', cfg.dark);
   setchk('tog-dt-settings', cfg.autoDateTime);
@@ -2844,7 +2904,7 @@ function openSettings() {
 
 function toggleDark() {
   cfg.dark = document.getElementById('tog-dark').checked;
-  document.body.classList.toggle('dark', cfg.dark);
+  document.body.classList.toggle('mode-sombre', cfg.dark);
   saveCfg();
 }
 
@@ -2853,8 +2913,30 @@ function applyTheme(t, save) {
   cfg.theme = t;
   document.body.className = document.body.className.replace(/theme-\w+/g,'').trim();
   if(t !== 'violet') document.body.classList.add('theme-' + t);
-  if(cfg.dark) document.body.classList.add('dark');
+  if(cfg.dark) document.body.classList.add('mode-sombre');
   if(save !== false) saveCfg();
+}
+
+function resetAdminPwd() {
+  try {
+    localStorage.removeItem(ADMIN_HASH_KEY);
+    localStorage.removeItem(ADMIN_FAILS_KEY);
+  } catch(e) { /* ignore */ }
+  const resetBtn = document.getElementById('btn-admin-reset');
+  if(resetBtn) resetBtn.style.display = 'none';
+  toast('✅ Mot de passe réinitialisé.');
+}
+
+function ajusterNombre(id, delta) {
+  const el = document.getElementById(id);
+  if(!el) return;
+  const min = el.min !== '' ? parseFloat(el.min) : -Infinity;
+  const max = el.max !== '' ? parseFloat(el.max) : Infinity;
+  const step = el.step !== '' ? parseFloat(el.step) : 1;
+  const val = parseFloat(el.value) || 0;
+  el.value = Math.min(max, Math.max(min, val + delta * step));
+  el.dispatchEvent(new Event('change'));
+  el.dispatchEvent(new Event('input'));
 }
 
 // ==============================
@@ -2913,7 +2995,7 @@ function sha256Hex(msg) {
 const ADMIN_SALT        = 'vbeps-admin|';
 const ADMIN_DEFAULT_HASH = '3500c5e8c35a7918ff99fa0ac2742258a2ebd5ed044e81e0c68c20ddbb4499e0';
 const ADMIN_HASH_KEY    = 'vbeps-admin-hash';
-const ADMIN_MAX_FAILS   = 5;
+const ADMIN_MAX_FAILS   = 3;
 const ADMIN_FAILS_KEY   = 'vbeps-admin-fails';
 
 function getAdminHash() {
@@ -2948,6 +3030,9 @@ function openAdmin() {
   document.getElementById('admin-login').style.display  = 'block';
   document.getElementById('admin-panel').style.display  = 'none';
   setv('admin-pwd', '');
+  const fails = parseInt(localStorage.getItem(ADMIN_FAILS_KEY) || '0', 10);
+  const resetBtn = document.getElementById('btn-admin-reset');
+  if(resetBtn) resetBtn.style.display = (fails >= ADMIN_MAX_FAILS) ? 'block' : 'none';
   openModal('modal-admin');
 }
 
@@ -2970,17 +3055,13 @@ function checkAdmin() {
     input.value = '';
     let fails = 0;
     try { fails = (parseInt(localStorage.getItem(ADMIN_FAILS_KEY), 10) || 0) + 1; } catch(e) { fails = 1; }
-    if(hash !== ADMIN_DEFAULT_HASH && fails >= ADMIN_MAX_FAILS) {
-      try {
-        localStorage.removeItem(ADMIN_HASH_KEY);
-        localStorage.removeItem(ADMIN_FAILS_KEY);
-      } catch(e) { /* ignore */ }
-      toast('⚠️ Trop d\'erreurs : mot de passe réinitialisé au mot de passe initial.');
-    } else {
-      try { localStorage.setItem(ADMIN_FAILS_KEY, String(fails)); } catch(e) { /* ignore */ }
-      toast('❌ Mot de passe incorrect');
-      vibrate();
+    try { localStorage.setItem(ADMIN_FAILS_KEY, String(fails)); } catch(e) { /* ignore */ }
+    if(fails >= ADMIN_MAX_FAILS) {
+      const resetBtn = document.getElementById('btn-admin-reset');
+      if(resetBtn) resetBtn.style.display = 'block';
     }
+    toast('❌ Mot de passe incorrect');
+    vibrate();
   }
 }
 function buildAdminCSVCols() {
@@ -3169,23 +3250,13 @@ function scoreCls(pts) {
 // SERVICE WORKER (PWA)
 // ==============================
 // Service Worker — uniquement sur http/https (pas sur file:// ni null)
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js')
-      .then(reg => {
-        // Vérifier les mises à jour
-        reg.addEventListener('updatefound', () => {
-          const newWorker = reg.installing;
-          newWorker.addEventListener('statechange', () => {
-            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              // Nouvelle version disponible — on l'active immédiatement
-              newWorker.postMessage({ type: 'SKIP_WAITING' });
-            }
-          });
-        });
-      })
-      .catch(err => console.warn('SW registration failed:', err));
-  });
+if('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
+  try {
+    const swCode = "self.addEventListener('install',e=>self.skipWaiting());self.addEventListener('activate',e=>self.clients.claim());self.addEventListener('fetch',e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)));});";
+    const blob = new Blob([swCode], {type:'application/javascript'});
+    const swUrl = URL.createObjectURL(blob);
+    navigator.serviceWorker.register(swUrl);
+  } catch(e) {}
 }
 
 
