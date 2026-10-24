@@ -1,0 +1,28 @@
+# Build et caches Gradle
+build/
+.gradle/
+.cxx/
+captures/
+
+# Fichiers locaux machine (chemin du SDK...)
+local.properties
+
+# IDE
+.idea/
+*.iml
+
+# Signature : ne jamais committer (voir CLAUDE.md racine, piège n°5)
+*.jks
+*.keystore
+keystore.properties
+
+# Binaires produits
+*.apk
+*.aab
+*.ap_
+*.dex
+
+.DS_Store
+
+# Généré par la tâche Gradle syncWebApp depuis ../pwa-build/
+app/src/main/assets/

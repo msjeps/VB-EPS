@@ -11,7 +11,6 @@
 <link rel="apple-touch-icon" sizes="512x512" href="icon_512.png">
 <link rel="shortcut icon" href="icon_192.png" type="image/png">
 <title>VB EPS — Volleyball</title>
-<meta name="description" content="Volley EPS — Observer les comportements en jeu et obtenir rapidement des indicateurs exploitables en collège comme au lycée.">
 <style>
 :root {
   --primary:#7c3aed; --primary-dark:#5b21b6; --primary-light:#ede9fe;
@@ -1022,9 +1021,9 @@ function buildJoueursFields() {
       + '<div style="font-weight:600;font-size:0.88rem;color:var(--primary);margin-bottom:6px;">Joueur '+(i+1)+'</div>'
       + '<div class="form-row">'
       + '<div class="form-group"><label for="joueur-coll-prenom-'+i+'">Prénom</label>'
-      + '<input type="text" id="joueur-coll-prenom-'+i+'" name="joueur-coll-prenom-'+i+'" placeholder="Prénom" value="'+prev_p+'" oninput="saveHomeData()"></div>'
+      + '<input type="text" id="joueur-coll-prenom-'+i+'" name="joueur-coll-prenom-'+i+'" placeholder="Prénom" value="'+escapeHtml(prev_p)+'" oninput="saveHomeData()"></div>'
       + '<div class="form-group"><label for="joueur-coll-nom-'+i+'">Nom</label>'
-      + '<input type="text" id="joueur-coll-nom-'+i+'" name="joueur-coll-nom-'+i+'" placeholder="Nom" value="'+prev_n+'" oninput="saveHomeData()"></div>'
+      + '<input type="text" id="joueur-coll-nom-'+i+'" name="joueur-coll-nom-'+i+'" placeholder="Nom" value="'+escapeHtml(prev_n)+'" oninput="saveHomeData()"></div>'
       + '</div></div>';
   }
   el.innerHTML = h;
@@ -1966,7 +1965,7 @@ function buildResults() {
   const op = (obs.type==='collectif') ? (getv('obs-coll-prenom')+' '+getv('obs-coll-nom')) : (getv('obs-prenom')+' '+getv('obs-nom'));
 
   const ri = document.getElementById('res-identity');
-  if(ri) ri.innerHTML = '👤 <b>' + jp + '</b> — ' + cl + ' — Obs: ' + op
+  if(ri) ri.innerHTML = '👤 <b>' + escapeHtml(jp) + '</b> — ' + escapeHtml(cl) + ' — Obs: ' + escapeHtml(op)
     + '<br>🎯 ' + roleLabel() + ' | ' + (obs.niveau==='college'?'Collège':'Lycée') + ' | ' + (obs.mode==='actions'?'Actions':'Match');
 
   const total = acts.reduce((a,b) => a+b.pts, 0);
@@ -2081,14 +2080,14 @@ function buildExportScreen() {
   var ei = document.getElementById('exp-identity');
   if(ei) {
     if(nbObs === 0) {
-      ei.innerHTML = '<b>Classe:</b> ' + cl + ' — Aucune observation';
+      ei.innerHTML = '<b>Classe:</b> ' + escapeHtml(cl) + ' — Aucune observation';
     } else if(nbObs === 1) {
-      ei.innerHTML = '<b>Joueur:</b> ' + allRows[0].joueur + ' — <b>Classe:</b> ' + cl;
+      ei.innerHTML = '<b>Joueur:</b> ' + escapeHtml(allRows[0].joueur) + ' — <b>Classe:</b> ' + escapeHtml(cl);
     } else {
       var joueurs = allRows.map(function(r){return r.joueur.trim();}).filter(function(j){return j;});
-      ei.innerHTML = '<b>Classe:</b> ' + cl + ' — <b>' + nbObs + ' observations</b>'
+      ei.innerHTML = '<b>Classe:</b> ' + escapeHtml(cl) + ' — <b>' + nbObs + ' observations</b>'
         + '<div style="font-size:0.82rem;color:var(--text2);margin-top:4px;">'
-        + joueurs.map(function(j,i){return (i+1)+'. '+j;}).join(' · ')
+        + joueurs.map(function(j,i){return (i+1)+'. '+escapeHtml(j);}).join(' · ')
         + '</div>';
     }
   }
@@ -2268,7 +2267,7 @@ function getCSV() {
       map['total_pts_'+rs.role] = rs.stats.total;
       map['pts_moy_'+rs.role]   = rs.stats.moy;
     });
-    lines.push(allCols.map(function(c){ return map[c.id]!==undefined ? String(map[c.id]).trim() : ''; }).join(';'));
+    lines.push(allCols.map(function(c){ return csvField(map[c.id]); }).join(';'));
   });
 
   return lines.join('\n');
@@ -2278,11 +2277,18 @@ function downloadCSV() {
   const cl  = (getv('classe')||'Classe').replace(/\s/g,'_');
   const dt  = getSessionDate().toLocaleDateString('fr-FR').replace(/\//g,'-');
   const fn  = 'EPS_Volleyball_' + cl + '_' + dt + '.csv';
-  const blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8;'});
-  const url  = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = fn; a.click();
-  URL.revokeObjectURL(url);
+  const content = '\uFEFF' + csv;
+  if (typeof AndroidDownload !== 'undefined') {
+    // APK WebView : blob: non géré — pont natif obligatoire
+    const b64 = btoa(unescape(encodeURIComponent(content)));
+    AndroidDownload.saveFile(b64, fn, 'text/csv');
+  } else {
+    const blob = new Blob([content], {type:'text/csv;charset=utf-8;'});
+    const url  = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = fn; a.click();
+    URL.revokeObjectURL(url);
+  }
   saveSession();
   toast('📄 CSV téléchargé');
 }
@@ -2792,8 +2798,8 @@ function buildHistoryUI() {
   el.innerHTML = sessions.slice(0,5).map(function(s) {
     var obsInfo = s.nbObs ? s.nbObs + ' obs.' : (s.nbActions ? s.nbActions + ' actions' : '');
     return '<div class="history-item">'
-    + '<div><div style="font-weight:600;">' + (s.joueur||'') + '</div>'
-    + '<div style="font-size:0.82rem;color:var(--text2);">' + (s.date||'') + ' — ' + (s.classe||'') + '</div></div>'
+    + '<div><div style="font-weight:600;">' + escapeHtml(s.joueur||'') + '</div>'
+    + '<div style="font-size:0.82rem;color:var(--text2);">' + escapeHtml(s.date||'') + ' — ' + escapeHtml(s.classe||'') + '</div></div>'
     + '<div style="text-align:right;"><span class="badge badge-primary">' + (s.totalPts||0) + ' ' + ptLabel(s.totalPts||0) + '</span>'
     + '<div style="font-size:0.8rem;color:var(--text2);">' + obsInfo + '</div></div>'
     + '</div>';
@@ -2808,8 +2814,8 @@ function showHistory() {
   } else {
     el.innerHTML = sessions.map(s =>
       '<div class="history-item">'
-      + '<div><div style="font-weight:600;">' + s.joueur + '</div>'
-      + '<div style="font-size:0.82rem;color:var(--text2);">' + s.date + ' — ' + s.classe + ' — ' + s.role + '</div></div>'
+      + '<div><div style="font-weight:600;">' + escapeHtml(s.joueur) + '</div>'
+      + '<div style="font-size:0.82rem;color:var(--text2);">' + escapeHtml(s.date) + ' — ' + escapeHtml(s.classe) + ' — ' + escapeHtml(s.role) + '</div></div>'
       + '<div style="text-align:right;"><span class="badge badge-primary">' + s.totalPts + ' ' + ptLabel(s.totalPts) + '</span>'
       + '<br><span style="font-size:0.8rem;color:var(--text2);">' + s.nbActions + ' actions</span></div>'
       + '</div>'
@@ -3015,6 +3021,18 @@ function getv(id)        { const e=document.getElementById(id); return e ? e.val
 function setv(id, val)   { const e=document.getElementById(id); if(e) e.value=val; }
 function setchk(id, val) { const e=document.getElementById(id); if(e) e.checked=!!val; }
 function escQ(s)         { return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
+// Échappe le texte saisi par l'élève/observateur avant insertion dans innerHTML (faille XSS stockée corrigée 2026-10)
+function escapeHtml(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+// Neutralise les formules Excel dans les champs CSV (injection de formule corrigée 2026-10)
+function csvField(v) {
+  var s = String(v == null ? '' : v).trim();
+  if (/^[=+\-@\t\r]/.test(s)) s = "'" + s;
+  return '"' + s.replace(/"/g, '""') + '"';
+}
 function roleLabel() {
   if(obs.type==='collectif') {
     if (obs.roles && obs.roles.length > 1) {

@@ -7,7 +7,15 @@
 *.pem
 keystore.properties
 local.properties
-google-services.json
+google-services.properties
+
+# APK — distribués via GitHub Releases, pas dans l'historique git
+*.apk
+*.aab
+*.idsig
+
+# Fichiers de sauvegarde
+*.bak
 
 # Système
 .DS_Store
@@ -19,3 +27,16 @@ dist/
 build/
 .claude/
 CLAUDE.md
+.idea/
+*.iml
+
+# Copie locale pwa-build (générée depuis VB_EPS.html, aussi copiée à la racine)
+# Les fichiers déployés (index.html, sw.js, manifest.json) sont à la racine
+pwa-build/
+
+# Android Studio (projet android/ versionné, mais pas ses artefacts)
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+android/app/src/main/assets/

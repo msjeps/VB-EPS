@@ -1,0 +1,60 @@
+plugins {
+    id 'com.android.application'
+}
+
+def keystoreProps = new Properties()
+def keystoreFile = rootProject.file('keystore.properties')
+if (keystoreFile.exists()) { keystoreFile.withInputStream { keystoreProps.load(it) } }
+
+android {
+    namespace 'com.eps.vbeps'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.eps.vbeps"
+        minSdk 24
+        targetSdk 34
+        versionCode 1
+        versionName "3.0"
+    }
+
+    signingConfigs {
+        release {
+            if (keystoreFile.exists()) {
+                storeFile file(keystoreProps['storeFile'])
+                storePassword keystoreProps['storePassword']
+                keyAlias keystoreProps['keyAlias']
+                keyPassword keystoreProps['keyPassword']
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            debuggable true
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+// Copie la PWA (pwa-build/) dans les assets à chaque build.
+// pwa-build/ est la source de vérité pour l'APK : toujours synchroniser VB_EPS.html → pwa-build/ avant de builder.
+tasks.register('syncWebApp', Copy) {
+    from "${rootDir}/../pwa-build"
+    into "${projectDir}/src/main/assets"
+}
+preBuild.dependsOn 'syncWebApp'
+
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.webkit:webkit:1.9.0'
+}
