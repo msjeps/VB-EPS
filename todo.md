@@ -67,23 +67,17 @@ Source : `security-audit-reports/VB-EPS/REPORT.md` — 5 failles confirmées, 0 
 
 ## 🔵 Priorité 4 — Hygiène et documentation
 
-### 6. Supprimer VB_EPS.html.bak
-
-Fichier résidu inutile à la racine du projet. Aucun risque sécurité (pas servi), mais pollution du dépôt.
-
-```bash
-rm "/Users/nathalieprenois/AndroidStudioProjects/VB EPS/VB_EPS.html.bak"
-```
+### 6. ~~Supprimer VB_EPS.html.bak~~ ✅ FAIT le 2026-10-24
 
 ---
 
-### 7. Mettre à jour CLAUDE.md (dérives documentaires)
+### 7. ~~Mettre à jour CLAUDE.md (dérives documentaires)~~ ✅ FAIT le 2026-10-24
 
-Le CLAUDE.md actuel contient des inexactitudes signalées par l'audit :
-- [ ] "pas de wrapper APK, PWA native" → faux : `VB_EPS_signed.apk` existe (com.eps.vbeps), projet source absent
-- [ ] "Persistance : localStorage + IndexedDB" → faux : **localStorage uniquement** (IndexedDB absent de VB_EPS.html)
-- [ ] "Wake Lock API" dans conventions communes → **absent** de VB_EPS.html actuellement (à ajouter si besoin)
-- [ ] Mettre à jour la section Sécurité pour refléter les 5 failles et leurs corrections
+Corrections appliquées :
+- Structure : projet `android/` documenté, anciens APK binaires signalés comme reliques
+- Persistance : localStorage uniquement (IndexedDB absent confirmé)
+- Wake Lock : marqué absent, à ajouter si besoin
+- Section Sécurité : XSS, CSV injection, APK WebView flags, mot de passe admin tous documentés
 
 ---
 
@@ -91,48 +85,23 @@ Le CLAUDE.md actuel contient des inexactitudes signalées par l'audit :
 
 ### 8. ~~Créer le projet source Android (wrapper WebView VB EPS)~~ ✅ FAIT le 2026-10-24
 
-Projet créé dans `android/` (convention Match Manager EPS / SCAN EPS) :
-- Package : `com.eps.vbeps`, tâche `syncWebApp` (copie `pwa-build/` → `assets/`)
-- Toutes les corrections sécurité appliquées (findings 3 et 4)
-- `vbeps.jks` existante réutilisée (`/Users/nathalieprenois/AndroidStudioProjects/vbeps.jks`)
-- ⚠️ **À faire** : copier `keystore.properties.template` → `keystore.properties` et remplir les mots de passe
+Projet créé dans `android/` : package `com.eps.vbeps`, tâche `syncWebApp`, `vbeps.jks` réutilisée.
 
 ---
 
-### 9. Créer la Release GitHub et mettre en place la structure de distribution
+### 9. ~~Créer la Release GitHub et mettre en place la structure de distribution~~ ✅ FAIT le 2026-10-24
 
-Quand l'APK est prête (après corrections n°3 et n°4) :
+- Release `v3.0` publiée sur `msjeps/VB-EPS`
+- Lien APK : `https://github.com/msjeps/VB-EPS/releases/latest/download/VB_EPS.apk`
+- Clone de référence initialisé dans `~/Documents/APPLI EPS/APPLI EPS/Vb eps/`, APK copié, git status propre
 
-**a) Dépôt GitHub**
-- Vérifier que le dépôt `msjeps/VB-EPS` existe (ou le créer)
-- S'assurer que le `.gitignore` exclut : `*.jks`, `keystore.properties`, `*.apk`, `build/`, `.DS_Store`, `CLAUDE.md`
-- Créer la Release : `gh release create v3.0 VB_EPS.apk --title "VB EPS v3.0" --notes "..."`
-- Lien de téléchargement : `https://github.com/msjeps/VB-EPS/releases/latest/download/VB_EPS.apk`
-
-**b) Dossier de distribution local (clone de référence)**
-```
-~/Documents/APPLI EPS/APPLI EPS/Vb eps/   ← clone du dépôt public msjeps/VB-EPS
-    ├── (clone git — index.html, sw.js, manifest.json, etc.)
-    ├── VB_EPS.apk                          ← copie de l'APK publié (ignoré par git)
-    └── Vb-eps-backup/                      ← anciens APK + clé .jks (ignoré par git)
-```
-
-Commandes à lancer **depuis un autre répertoire** (cf. piège `Documents/APPLI EPS` en session) :
+**Après chaque publication future** :
 ```bash
-cd /tmp
-git clone https://github.com/msjeps/VB-EPS.git "/Users/nathalieprenois/Documents/APPLI EPS/APPLI EPS/Vb eps"
+git --git-dir="/Users/nathalieprenois/Documents/APPLI EPS/APPLI EPS/Vb eps/.git" \
+    --work-tree="/Users/nathalieprenois/Documents/APPLI EPS/APPLI EPS/Vb eps" pull
+# puis copier l'APK publié dans ce dossier
 ```
-
-Puis copier l'APK publié :
-```bash
-cp "/Users/nathalieprenois/AndroidStudioProjects/VB EPS/android/app/build/outputs/apk/release/VB_EPS.apk" \
-   "/Users/nathalieprenois/Documents/APPLI EPS/APPLI EPS/Vb eps/VB_EPS.apk"
-```
-
-**c) Après chaque publication future**
-- `git -C "/Users/nathalieprenois/Documents/APPLI EPS/APPLI EPS/Vb eps" pull`
-- Copier l'APK publié
-- Vérifier `git status` propre + `cmp index.html` identique à la copie de travail
+Note : `cd` + `ls` dans `Documents/APPLI EPS` → "Operation not permitted" dans cette session ; utiliser `--git-dir` + `--work-tree`.
 
 ---
 
