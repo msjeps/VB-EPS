@@ -95,7 +95,7 @@ python3 -m http.server 8080
    python3 build_pwa.py
    ```
 2. Uploader le nouveau `pwa-build/index.html` sur GitHub
-3. Incrémenter la version dans `sw.js` si besoin (`CACHE_NAME = 'vb-eps-v3.1'`)
+3. Incrémenter la version dans `sw.js` si besoin (`CACHE_NAME = 'vb-eps-v3.2'`)
 
 ---
 
