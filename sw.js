@@ -4,7 +4,7 @@
  * Compatible Android (Chrome) + iOS (Safari 16.4+)
  */
 
-const CACHE_NAME = 'vb-eps-v3';
+const CACHE_NAME = 'vb-eps-v3.1';
 const CACHE_ASSETS = [
   './',
   './index.html',
