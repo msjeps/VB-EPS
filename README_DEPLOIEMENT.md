@@ -95,13 +95,13 @@ python3 -m http.server 8080
    python3 build_pwa.py
    ```
 2. Uploader le nouveau `pwa-build/index.html` sur GitHub
-3. Incrémenter la version dans `sw.js` si besoin (`CACHE_NAME = 'vb-eps-v3'`)
+3. Incrémenter la version dans `sw.js` si besoin (`CACHE_NAME = 'vb-eps-v3.1'`)
 
 ---
 
 ## Barèmes personnalisés
 
-Les barèmes modifiés via "Configuration avancée" (mot de passe : `ADMINPROF`)
+Les barèmes modifiés via "Configuration avancée" (accès professeur protégé par mot de passe hashé SHA-256)
 sont **locaux à chaque tablette** (stockés dans localStorage).
 
 Pour partager des barèmes modifiés sur toutes les tablettes :
