@@ -364,7 +364,7 @@ body.mode-sombre .stepper-btn { background:var(--card); color:var(--text); }
   <div class="banner-wrap">
     <img id="home-banner" alt="VB EPS" style="width:100%;height:auto;display:block;object-fit:cover;">
     <div style="text-align:center;padding:4px 0 0;font-size:0.85rem;color:var(--text2);">Observation Volleyball — EPS</div>
-    <div style="text-align:center;padding:2px 0 4px;font-size:0.8rem;color:var(--text2);opacity:0.7;">Version 3.3</div>
+    <div style="text-align:center;padding:2px 0 4px;font-size:0.8rem;color:var(--text2);opacity:0.7;">Version 3.5</div>
   </div>
   <div class="card">
     <div class="card-title">🏫 Classe</div>
@@ -2341,7 +2341,10 @@ function downloadCSV() {
   const csv = getCSV();
   const cl  = (getv('classe')||'Classe').replace(/\s/g,'_');
   const dt  = getSessionDate().toLocaleDateString('fr-FR').replace(/\//g,'-');
-  const fn  = 'EPS_Volleyball_' + cl + '_' + dt + '.csv';
+  // Date de la séance + heure de l'export : la date seule donnerait le même nom à chaque export du jour (le dernier écraserait le précédent)
+  const now = new Date();
+  const hm  = String(now.getHours()).padStart(2,'0') + 'h' + String(now.getMinutes()).padStart(2,'0');
+  const fn  = 'EPS_Volleyball_' + cl + '_' + dt + '_' + hm + '.csv';
   const content = '\uFEFF' + csv;
   if (typeof AndroidDownload !== 'undefined') {
     // APK WebView : blob: non géré — pont natif obligatoire

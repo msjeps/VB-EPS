@@ -210,7 +210,7 @@ def contenu():
         "Les résultats sont exportables en fichier CSV (séparateur <font name='FM'>;</font>, encodage UTF-8 avec BOM "
         "pour Excel français). Le fichier est nommé :"
     ))
-    s.append(P('<font name="FM">EPS_Volleyball_[Classe]_[Date].csv</font>'))
+    s.append(P('<font name="FM">EPS_Volleyball_[Classe]_[Date]_[Heure].csv</font>'))
     s.append(Spacer(1, 4))
     s.append(P(
         "L'accès professeur permet de choisir les colonnes à inclure dans l'export (via Configuration avancée)."
